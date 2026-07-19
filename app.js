@@ -266,6 +266,9 @@ function openLightbox(id, cap){
   lightboxId = id;
   document.getElementById('lightboxImg').src = photo;
   document.getElementById('lightboxCap').textContent = cap || '';
+  // o botão "remover" só faz sentido para fotos guardadas no navegador
+  const isLocal = !!loadPhotos()[id];
+  document.getElementById('lightboxRm').style.display = isLocal ? '' : 'none';
   document.getElementById('lightbox').classList.add('show');
 }
 function closeLightbox(){ document.getElementById('lightbox').classList.remove('show'); lightboxId=null; }

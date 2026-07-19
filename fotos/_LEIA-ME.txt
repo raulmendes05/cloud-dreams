@@ -1,0 +1,13 @@
+PASTA DE FOTOS DOS VAPES
+========================
+Guarda aqui as fotos com o NÚMERO do vape como nome (coluna "#" da tabela).
+
+Exemplos:
+  12.jpg   -> vape #12 (Vapsolo · Pineapple Coconut, "Anos Maria")
+  30.png   -> vape #30 (Vapsolo · Holanda)
+  32.jpg   -> vape #32 (Vapsolo · Dinis 6em1)
+
+Regras:
+ - Usa .jpg ou .png (NÃO uses HEIC do iPhone; se só tiveres HEIC, avisa o Claude).
+ - Só precisas das fotos que tens; as outras continuam com o botão "+ foto".
+ - Quando acabares, diz ao Claude "já está" e ele liga as fotos ao site.
