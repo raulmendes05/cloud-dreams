@@ -94,6 +94,25 @@
   .funny .small{color:var(--muted);font-size:13px;margin-top:12px}
   footer{text-align:center;color:var(--muted);font-size:12.5px;margin-top:40px}
   .puff-cloud{position:fixed;pointer-events:none;font-size:30px;opacity:0;z-index:60}
+  /* photos */
+  .thumb{width:46px;height:46px;border-radius:10px;object-fit:cover;cursor:pointer;
+    border:1px solid var(--line);background:var(--bg2);display:block;transition:transform .12s}
+  .thumb:hover{transform:scale(1.08);border-color:var(--neon)}
+  .addphoto{width:46px;height:46px;border-radius:10px;border:1px dashed var(--line);background:var(--bg2);
+    color:var(--muted);cursor:pointer;font-size:11px;line-height:1.1;display:flex;align-items:center;
+    justify-content:center;text-align:center;padding:2px}
+  .addphoto:hover{border-color:var(--neon);color:var(--neon2)}
+  .photo-drop{width:100%;height:120px;border:1px dashed var(--line);border-radius:12px;background:var(--bg2);
+    display:flex;align-items:center;justify-content:center;flex-direction:column;gap:4px;color:var(--muted);
+    cursor:pointer;font-size:13px;overflow:hidden}
+  .photo-drop:hover{border-color:var(--neon)}
+  .photo-drop img{width:100%;height:100%;object-fit:cover}
+  .lightbox{position:fixed;inset:0;background:rgba(2,4,10,.92);display:none;align-items:center;
+    justify-content:center;z-index:70;padding:24px;flex-direction:column;gap:14px}
+  .lightbox.show{display:flex;animation:fade .2s ease}
+  .lightbox img{max-width:min(680px,92vw);max-height:78vh;border-radius:16px;box-shadow:var(--shadow)}
+  .lightbox .cap{color:var(--txt);font-size:15px;text-align:center}
+  .lightbox .rm{color:var(--red);font-size:12.5px;cursor:pointer;background:none;border:none;text-decoration:underline}
 </style>
 </head>
 <body>
@@ -147,7 +166,7 @@
     <div class="tablewrap">
       <table>
         <thead><tr>
-          <th>#</th><th>Marca</th><th>Sabor</th><th>Puffs</th>
+          <th>#</th><th>Foto</th><th>Marca</th><th>Sabor</th><th>Puffs</th>
           <th>Início</th><th>Fim</th><th>Durou</th><th>Preço</th><th>Nota</th>
         </tr></thead>
         <tbody id="tbody"></tbody>
@@ -162,6 +181,13 @@
 <div class="overlay" id="addOverlay">
   <div class="modal">
     <h3>💨 Novo vape</h3>
+    <div class="field">
+      <label>Foto (opcional)</label>
+      <div class="photo-drop" id="f_photo_drop" onclick="document.getElementById('f_photo').click()">
+        <span id="f_photo_hint">📸 clica para escolher uma foto</span>
+      </div>
+      <input id="f_photo" type="file" accept="image/*" style="display:none" onchange="onFormPhoto(this)" />
+    </div>
     <div class="field"><label>Marca</label><input id="f_marca" placeholder="ex: Vapsolo" /></div>
     <div class="field"><label>Sabor</label><input id="f_sabor" placeholder="ex: Strawberry Ice" /></div>
     <div class="row2">
@@ -192,6 +218,16 @@
     </div>
   </div>
 </div>
+
+<!-- Lightbox de fotos -->
+<div class="lightbox" id="lightbox" onclick="if(event.target===this)closeLightbox()">
+  <img id="lightboxImg" src="" alt="foto do vape" />
+  <div class="cap" id="lightboxCap"></div>
+  <button class="rm" id="lightboxRm" onclick="removePhotoFromLightbox()">🗑️ remover esta foto</button>
+</div>
+
+<!-- input escondido para upload nas linhas da tabela -->
+<input id="rowPhotoInput" type="file" accept="image/*" style="display:none" />
 
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/date-fns@3.6.0/cdn.min.js"></script>

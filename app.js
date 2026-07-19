@@ -1,9 +1,40 @@
 /* ===== CloudDreams · lógica ===== */
 const LS_KEY = 'clouddreams_extra_vapes';
+const LS_PHOTOS = 'clouddreams_photos';
 
 // vapes adicionados pelo utilizador (guardados no navegador)
 function loadExtra(){ try { return JSON.parse(localStorage.getItem(LS_KEY)) || []; } catch(e){ return []; } }
 function saveExtra(list){ localStorage.setItem(LS_KEY, JSON.stringify(list)); }
+
+/* ---------- fotos (guardadas no navegador, encolhidas) ---------- */
+function loadPhotos(){ try { return JSON.parse(localStorage.getItem(LS_PHOTOS)) || {}; } catch(e){ return {}; } }
+function savePhotos(map){
+  try { localStorage.setItem(LS_PHOTOS, JSON.stringify(map)); return true; }
+  catch(e){ alert('Sem espaço para guardar mais fotos no navegador 😬 (tenta remover algumas).'); return false; }
+}
+function getPhoto(vape){ const p = loadPhotos(); return p[vape.id] || vape.foto || null; }
+function setPhoto(id, dataUrl){ const p = loadPhotos(); p[id] = dataUrl; if(savePhotos(p)) refresh(); }
+function removePhoto(id){ const p = loadPhotos(); delete p[id]; savePhotos(p); refresh(); }
+
+// encolhe a imagem para no máx. 600px e comprime em JPEG (poupa muito espaço)
+function resizeImage(file, maxDim=600, quality=0.72){
+  return new Promise((resolve,reject)=>{
+    const reader = new FileReader();
+    reader.onload = e=>{
+      const img = new Image();
+      img.onload = ()=>{
+        let {width:w, height:h} = img;
+        if(w>h && w>maxDim){ h=Math.round(h*maxDim/w); w=maxDim; }
+        else if(h>=w && h>maxDim){ w=Math.round(w*maxDim/h); h=maxDim; }
+        const c = document.createElement('canvas'); c.width=w; c.height=h;
+        c.getContext('2d').drawImage(img,0,0,w,h);
+        resolve(c.toDataURL('image/jpeg', quality));
+      };
+      img.onerror = reject; img.src = e.target.result;
+    };
+    reader.onerror = reject; reader.readAsDataURL(file);
+  });
+}
 
 function allVapes(){
   const base = (window.VAPES_BASE || []).slice();
@@ -151,8 +182,14 @@ function render(){
     const preco = x.preco>0 ? fmtEur(x.preco) : '<span class="free">grátis</span>';
     const puffs = typeof x.puffs==='number' ? fmtNum(x.puffs) : '<span class="tag">recarregável</span>';
     const durou = active ? '<span class="active-badge">em uso</span>' : (x.dias!=null?x.dias+' dias':'—');
+    const photo = getPhoto(x);
+    const cap = `${x.marca} · ${x.sabor}`.replace(/'/g,"\\'");
+    const photoCell = photo
+      ? `<img class="thumb" src="${photo}" onclick="openLightbox('${x.id}','${cap}')" alt="foto" />`
+      : `<button class="addphoto" onclick="pickRowPhoto('${x.id}')">＋ foto</button>`;
     return `<tr>
       <td class="tag">#${x._n}</td>
+      <td>${photoCell}</td>
       <td><span class="pill">${x.marca}</span></td>
       <td><span class="flavor">${x.sabor}</span></td>
       <td>${puffs}</td>
@@ -165,12 +202,47 @@ function render(){
   }).join('');
 }
 
+/* ---------- fotos: upload por linha da tabela ---------- */
+function pickRowPhoto(id){
+  const input = document.getElementById('rowPhotoInput');
+  input.value = '';
+  input.onchange = async ()=>{
+    if(!input.files[0]) return;
+    try { const data = await resizeImage(input.files[0]); setPhoto(id, data); }
+    catch(e){ alert('Não consegui ler essa imagem 😕'); }
+  };
+  input.click();
+}
+
+/* ---------- lightbox ---------- */
+let lightboxId = null;
+function openLightbox(id, cap){
+  const vape = allVapes().find(v=>String(v.id)===String(id));
+  const photo = vape ? getPhoto(vape) : null;
+  if(!photo) return;
+  lightboxId = id;
+  document.getElementById('lightboxImg').src = photo;
+  document.getElementById('lightboxCap').textContent = cap || '';
+  document.getElementById('lightbox').classList.add('show');
+}
+function closeLightbox(){ document.getElementById('lightbox').classList.remove('show'); lightboxId=null; }
+function removePhotoFromLightbox(){ if(lightboxId!=null){ removePhoto(lightboxId); closeLightbox(); } }
+
 /* ---------- add modal ---------- */
+let pendingPhoto = null; // foto escolhida no formulário, ainda por guardar
 function openAdd(){
   document.getElementById('f_comeco').value = new Date().toISOString().slice(0,10);
   document.getElementById('addOverlay').classList.add('show');
 }
 function closeAdd(){ document.getElementById('addOverlay').classList.remove('show'); }
+
+async function onFormPhoto(input){
+  if(!input.files[0]) return;
+  try {
+    pendingPhoto = await resizeImage(input.files[0]);
+    document.getElementById('f_photo_drop').innerHTML = `<img src="${pendingPhoto}" alt="pré-visualização" />`;
+  } catch(e){ alert('Não consegui ler essa imagem 😕'); }
+}
 
 function saveVape(){
   const marca = document.getElementById('f_marca').value.trim();
@@ -183,12 +255,19 @@ function saveVape(){
   const nota = document.getElementById('f_nota').value.trim()||null;
   const dias = daysBetween(comeco,fim);
 
+  const newId = 'x'+Date.now();
   const extra = loadExtra();
-  extra.push({ id:'x'+Date.now(), marca, sabor, puffs, preco, comeco, fim, dias, entre:null, nota, user:true });
+  extra.push({ id:newId, marca, sabor, puffs, preco, comeco, fim, dias, entre:null, nota, user:true });
   saveExtra(extra);
+
+  // guardar foto (se escolhida)
+  if(pendingPhoto){ const p = loadPhotos(); p[newId] = pendingPhoto; savePhotos(p); }
 
   // limpar form
   ['f_marca','f_sabor','f_puffs','f_preco','f_fim','f_nota'].forEach(id=>document.getElementById(id).value='');
+  pendingPhoto = null;
+  document.getElementById('f_photo').value = '';
+  document.getElementById('f_photo_drop').innerHTML = '<span id="f_photo_hint">📸 clica para escolher uma foto</span>';
   closeAdd();
   refresh();
   puffAnimation();
@@ -244,5 +323,5 @@ function puffAnimation(){
 function refresh(){ renderStats(); fillBrandFilter(); renderCharts(); render(); }
 // fechar modais ao clicar fora
 document.querySelectorAll('.overlay').forEach(o=>o.addEventListener('click',e=>{ if(e.target===o) o.classList.remove('show'); }));
-document.addEventListener('keydown',e=>{ if(e.key==='Escape') document.querySelectorAll('.overlay').forEach(o=>o.classList.remove('show')); });
+document.addEventListener('keydown',e=>{ if(e.key==='Escape'){ document.querySelectorAll('.overlay').forEach(o=>o.classList.remove('show')); closeLightbox(); } });
 refresh();
