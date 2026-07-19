@@ -1,0 +1,202 @@
+<!doctype html>
+<html lang="pt">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>CloudDreams · O meu diário de vapes</title>
+<link rel="preconnect" href="https://cdn.jsdelivr.net" />
+<style>
+  :root{
+    --bg:#070912; --bg2:#0d1020; --card:rgba(20,24,44,.72); --card-solid:#141828;
+    --line:rgba(120,140,200,.14); --txt:#e7ecff; --muted:#8b95c4;
+    --neon:#7c5cff; --neon2:#22d3ee; --pink:#ff5c9d; --gold:#ffd166; --green:#4ade80; --red:#ff6b6b;
+    --shadow:0 20px 60px -20px rgba(0,0,0,.8);
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;padding:0}
+  body{
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Inter,sans-serif;
+    background:radial-gradient(1200px 700px at 15% -10%,rgba(124,92,255,.22),transparent 60%),
+               radial-gradient(1000px 600px at 95% 0%,rgba(34,211,238,.14),transparent 55%),
+               var(--bg);
+    color:var(--txt); min-height:100vh; overflow-x:hidden;
+  }
+  .wrap{max-width:1180px;margin:0 auto;padding:28px 20px 80px}
+  /* header */
+  header.top{display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap;margin-bottom:28px}
+  .brand{display:flex;align-items:center;gap:14px}
+  .logo{font-size:34px;filter:drop-shadow(0 4px 14px rgba(124,92,255,.6))}
+  .brand h1{margin:0;font-size:26px;letter-spacing:.5px;
+    background:linear-gradient(90deg,#fff,var(--neon2));-webkit-background-clip:text;background-clip:text;color:transparent}
+  .brand p{margin:2px 0 0;color:var(--muted);font-size:13px}
+  .btn{cursor:pointer;border:none;border-radius:14px;padding:13px 20px;font-size:15px;font-weight:700;
+    color:#fff;background:linear-gradient(135deg,var(--neon),var(--pink));
+    box-shadow:0 10px 30px -8px rgba(124,92,255,.7);transition:transform .12s ease,filter .12s}
+  .btn:hover{transform:translateY(-2px);filter:brightness(1.08)}
+  .btn:active{transform:translateY(0)}
+  /* stat grid */
+  .stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(165px,1fr));gap:14px;margin-bottom:26px}
+  .stat{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:18px 18px 16px;
+    backdrop-filter:blur(10px);box-shadow:var(--shadow);position:relative;overflow:hidden}
+  .stat .lbl{font-size:12px;color:var(--muted);text-transform:uppercase;letter-spacing:.8px}
+  .stat .val{font-size:28px;font-weight:800;margin-top:6px;line-height:1.1}
+  .stat .sub{font-size:12px;color:var(--muted);margin-top:4px}
+  .stat .ic{position:absolute;top:12px;right:14px;font-size:22px;opacity:.85}
+  .stat.accent .val{background:linear-gradient(90deg,var(--gold),var(--pink));-webkit-background-clip:text;background-clip:text;color:transparent}
+  /* sections */
+  .section{background:var(--card);border:1px solid var(--line);border-radius:20px;padding:20px 22px;margin-bottom:22px;
+    backdrop-filter:blur(10px);box-shadow:var(--shadow)}
+  .section h2{margin:0 0 4px;font-size:17px;display:flex;align-items:center;gap:9px}
+  .section .hint{color:var(--muted);font-size:12.5px;margin:0 0 16px}
+  .charts{display:grid;grid-template-columns:1fr 1fr;gap:22px}
+  @media(max-width:820px){.charts{grid-template-columns:1fr}}
+  .chartbox{position:relative;height:280px}
+  /* controls */
+  .controls{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-bottom:14px}
+  input,select{background:var(--bg2);border:1px solid var(--line);color:var(--txt);
+    border-radius:11px;padding:10px 13px;font-size:14px;outline:none}
+  input:focus,select:focus{border-color:var(--neon)}
+  input[type=search]{min-width:220px;flex:1}
+  /* table */
+  .tablewrap{overflow-x:auto;border-radius:14px}
+  table{width:100%;border-collapse:collapse;font-size:13.5px;min-width:760px}
+  th,td{padding:11px 12px;text-align:left;border-bottom:1px solid var(--line);white-space:nowrap}
+  th{color:var(--muted);font-size:11.5px;text-transform:uppercase;letter-spacing:.6px;cursor:pointer;user-select:none;position:sticky;top:0;background:var(--card-solid)}
+  th:hover{color:var(--txt)}
+  tbody tr:hover{background:rgba(124,92,255,.08)}
+  td .flavor{white-space:normal;max-width:280px;display:inline-block}
+  .pill{display:inline-block;padding:3px 9px;border-radius:999px;font-size:11.5px;font-weight:700;background:rgba(124,92,255,.18);color:#c4b8ff}
+  .tag{font-size:11px;color:var(--muted)}
+  .active-badge{background:rgba(74,222,128,.16);color:var(--green);padding:3px 9px;border-radius:999px;font-size:11px;font-weight:700}
+  .free{color:var(--green);font-weight:700}
+  /* modal */
+  .overlay{position:fixed;inset:0;background:rgba(4,6,14,.72);backdrop-filter:blur(6px);
+    display:none;align-items:center;justify-content:center;z-index:50;padding:20px}
+  .overlay.show{display:flex;animation:fade .2s ease}
+  @keyframes fade{from{opacity:0}to{opacity:1}}
+  .modal{background:linear-gradient(180deg,var(--card-solid),#0e1220);border:1px solid var(--line);
+    border-radius:22px;padding:26px;max-width:460px;width:100%;box-shadow:var(--shadow);animation:pop .25s cubic-bezier(.2,1.3,.4,1)}
+  @keyframes pop{from{transform:scale(.9) translateY(10px);opacity:0}to{transform:scale(1);opacity:1}}
+  .modal h3{margin:0 0 16px;font-size:19px}
+  .field{margin-bottom:13px}
+  .field label{display:block;font-size:12.5px;color:var(--muted);margin-bottom:5px}
+  .field input,.field select{width:100%}
+  .row2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+  .modal-actions{display:flex;gap:10px;margin-top:18px}
+  .modal-actions .btn{flex:1}
+  .btn.ghost{background:transparent;border:1px solid var(--line);box-shadow:none;color:var(--muted)}
+  /* funny popup */
+  .funny .modal{max-width:440px;text-align:center;border-color:rgba(255,92,157,.4)}
+  .funny .emoji{font-size:64px;margin-bottom:6px;animation:shake .6s ease}
+  @keyframes shake{0%,100%{transform:rotate(0)}25%{transform:rotate(-12deg)}75%{transform:rotate(12deg)}}
+  .funny h3{font-size:22px;background:linear-gradient(90deg,var(--pink),var(--gold));-webkit-background-clip:text;background-clip:text;color:transparent}
+  .funny p{color:var(--txt);font-size:15.5px;line-height:1.55;margin:10px 0 4px}
+  .funny .small{color:var(--muted);font-size:13px;margin-top:12px}
+  footer{text-align:center;color:var(--muted);font-size:12.5px;margin-top:40px}
+  .puff-cloud{position:fixed;pointer-events:none;font-size:30px;opacity:0;z-index:60}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="top">
+    <div class="brand">
+      <div class="logo">☁️💨</div>
+      <div>
+        <h1>CloudDreams</h1>
+        <p>O diário de todos os vapes do Raul · desde ago 2023</p>
+      </div>
+    </div>
+    <button class="btn" onclick="openAdd()">＋ Adicionar vape</button>
+  </header>
+
+  <div class="stats" id="stats"></div>
+
+  <div class="section">
+    <h2>📈 Gasto acumulado</h2>
+    <p class="hint">Quanto já foi para o fumo, ao longo do tempo.</p>
+    <div class="chartbox"><canvas id="spendChart"></canvas></div>
+  </div>
+
+  <div class="charts">
+    <div class="section">
+      <h2>🏷️ Vapes por marca</h2>
+      <p class="hint">As tuas marcas de eleição.</p>
+      <div class="chartbox"><canvas id="brandChart"></canvas></div>
+    </div>
+    <div class="section">
+      <h2>⏳ Quanto duram</h2>
+      <p class="hint">Dias que cada vape aguentou (por ordem cronológica).</p>
+      <div class="chartbox"><canvas id="daysChart"></canvas></div>
+    </div>
+  </div>
+
+  <div class="section">
+    <h2>🗂️ Todos os vapes <span class="tag" id="count"></span></h2>
+    <div class="controls">
+      <input type="search" id="search" placeholder="🔍 procurar sabor, marca, nota..." oninput="render()" />
+      <select id="brandFilter" onchange="render()"><option value="">Todas as marcas</option></select>
+      <select id="sortSel" onchange="render()">
+        <option value="comeco">Ordenar: mais recente</option>
+        <option value="comecoAsc">Ordenar: mais antigo</option>
+        <option value="dias">Ordenar: durou mais</option>
+        <option value="diasAsc">Ordenar: durou menos</option>
+        <option value="preco">Ordenar: mais caro</option>
+        <option value="puffs">Ordenar: mais puffs</option>
+      </select>
+    </div>
+    <div class="tablewrap">
+      <table>
+        <thead><tr>
+          <th>#</th><th>Marca</th><th>Sabor</th><th>Puffs</th>
+          <th>Início</th><th>Fim</th><th>Durou</th><th>Preço</th><th>Nota</th>
+        </tr></thead>
+        <tbody id="tbody"></tbody>
+      </table>
+    </div>
+  </div>
+
+  <footer>☁️ CloudDreams · feito com dados reais · os vapes que adicionas ficam guardados no teu navegador</footer>
+</div>
+
+<!-- Add modal -->
+<div class="overlay" id="addOverlay">
+  <div class="modal">
+    <h3>💨 Novo vape</h3>
+    <div class="field"><label>Marca</label><input id="f_marca" placeholder="ex: Vapsolo" /></div>
+    <div class="field"><label>Sabor</label><input id="f_sabor" placeholder="ex: Strawberry Ice" /></div>
+    <div class="row2">
+      <div class="field"><label>Puffs</label><input id="f_puffs" type="number" placeholder="20000" /></div>
+      <div class="field"><label>Preço (€)</label><input id="f_preco" type="number" step="0.01" placeholder="20" /></div>
+    </div>
+    <div class="row2">
+      <div class="field"><label>Início</label><input id="f_comeco" type="date" /></div>
+      <div class="field"><label>Fim (opcional)</label><input id="f_fim" type="date" /></div>
+    </div>
+    <div class="field"><label>Nota (opcional)</label><input id="f_nota" placeholder="ex: Anos do Dinis" /></div>
+    <div class="modal-actions">
+      <button class="btn ghost" onclick="closeAdd()">Cancelar</button>
+      <button class="btn" onclick="saveVape()">Guardar</button>
+    </div>
+  </div>
+</div>
+
+<!-- Funny popup -->
+<div class="overlay funny" id="funnyOverlay">
+  <div class="modal">
+    <div class="emoji" id="funnyEmoji">🚭</div>
+    <h3 id="funnyTitle"></h3>
+    <p id="funnyMsg"></p>
+    <p class="small" id="funnySmall"></p>
+    <div class="modal-actions">
+      <button class="btn" onclick="closeFunny()">Ok, prometo... 🤞</button>
+    </div>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/date-fns@3.6.0/cdn.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-date-fns@3.0.0/dist/chartjs-adapter-date-fns.bundle.min.js"></script>
+<script src="data.js"></script>
+<script src="app.js"></script>
+</body>
+</html>
