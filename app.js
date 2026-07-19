@@ -55,6 +55,20 @@ function daysBetween(a,b){ if(!a||!b) return null; return Math.round((new Date(b
 function ptDate(iso){ if(!iso) return '—'; const d=new Date(iso); return d.toLocaleDateString('pt-PT',{day:'2-digit',month:'short',year:'2-digit'}); }
 function mode(arr){ const m={}; let best=null,bc=0; arr.forEach(x=>{ if(!x) return; m[x]=(m[x]||0)+1; if(m[x]>bc){bc=m[x];best=x;} }); return {value:best,count:bc}; }
 
+/* ---------- pausas entre vapes (quanto tempo sem vape) ---------- */
+// devolve um mapa { id: dias de pausa antes deste vape }.
+// pausa = dias entre o FIM do vape anterior e o INÍCIO deste.
+// >0 = aguentou sem vape; <0 = sobrepôs-se (comprou antes de acabar o anterior)
+function computeGaps(){
+  const v = allVapes().filter(x=>x.comeco).sort((a,b)=>a.comeco.localeCompare(b.comeco));
+  const map = {};
+  for(let i=1;i<v.length;i++){
+    const prev = v[i-1], cur = v[i];
+    map[cur.id] = prev.fim ? daysBetween(prev.fim, cur.comeco) : null;
+  }
+  return map;
+}
+
 /* ---------- stats ---------- */
 function computeStats(){
   const v = allVapes();
@@ -75,9 +89,20 @@ function computeStats(){
 function renderStats(){
   const s = computeStats();
   const cafes = Math.round(s.totalGasto/1.2); // €1.20 por café
+
+  // pausas: recorde e total sem vape
+  const gaps = computeGaps();
+  const vById = {}; allVapes().forEach(v=>vById[v.id]=v);
+  let recorde = 0, recordeVape = null, totalSemVape = 0;
+  Object.entries(gaps).forEach(([id,g])=>{
+    if(g!=null && g>0){ totalSemVape += g; if(g>recorde){ recorde=g; recordeVape=vById[id]; } }
+  });
+
   const cards = [
     {ic:'💨', lbl:'Vapes comprados', val:fmtNum(s.count), sub:`em ${Math.round(s.meses)} meses`},
     {ic:'💸', lbl:'Total gasto', val:fmtEur(s.totalGasto), sub:`≈ ${cafes} cafés ☕`, accent:true},
+    {ic:'🏅', lbl:'Recorde sem vape', val:recorde+' dias', sub:recordeVape?`antes do ${recordeVape.marca}`:'—', accent:true},
+    {ic:'🧘', lbl:'Total sem vape', val:totalSemVape+' dias', sub:'somando todas as pausas'},
     {ic:'🌬️', lbl:'Puffs totais', val:fmtNum(s.totalPuffs), sub:'baforadas registadas'},
     {ic:'⏳', lbl:'Duração média', val:Math.round(s.avgDias)+' dias', sub:'por vape'},
     {ic:'🏆', lbl:'Durou mais', val:(s.longest?s.longest.dias+' dias':'—'), sub:s.longest?`${s.longest.marca} · ${s.longest.sabor}`:''},
@@ -167,6 +192,7 @@ function render(){
   const q = document.getElementById('search').value.toLowerCase().trim();
   const bf = document.getElementById('brandFilter').value;
   const sort = document.getElementById('sortSel').value;
+  const gaps = computeGaps();
   let v = allVapes().map((x,i)=>({...x, _n:i+1}));
 
   if(q) v = v.filter(x=>[x.marca,x.sabor,x.nota].filter(Boolean).join(' ').toLowerCase().includes(q));
@@ -177,6 +203,7 @@ function render(){
     comecoAsc:(a,b)=>(a.comeco||'').localeCompare(b.comeco||''),
     dias:(a,b)=>(b.dias||0)-(a.dias||0),
     diasAsc:(a,b)=>(a.dias||0)-(b.dias||0),
+    gap:(a,b)=>((gaps[b.id]??-Infinity)-(gaps[a.id]??-Infinity)),
     preco:(a,b)=>(b.preco||0)-(a.preco||0),
     puffs:(a,b)=>(b.puffs||0)-(a.puffs||0),
   };
@@ -197,6 +224,12 @@ function render(){
     const photoCell = photo
       ? `<img class="thumb" src="${photo}" onclick="openLightbox('${x.id}','${cap}')" alt="foto" />`
       : `<button class="addphoto" onclick="pickRowPhoto('${x.id}')">＋ foto</button>`;
+    const g = gaps[x.id];
+    let semVape;
+    if(g==null) semVape = '<span class="tag">—</span>';
+    else if(g>0) semVape = `<span class="gap-pos">${g}d sem vape</span>`;
+    else if(g===0) semVape = '<span class="gap-zero">logo a seguir</span>';
+    else semVape = `<span class="gap-neg">sobrepôs ${-g}d</span>`;
     return `<tr>
       <td class="tag">#${x._n}</td>
       <td>${photoCell}</td>
@@ -206,6 +239,7 @@ function render(){
       <td>${ptDate(x.comeco)}</td>
       <td>${ptDate(x.fim)}</td>
       <td>${durou}</td>
+      <td>${semVape}</td>
       <td>${preco}</td>
       <td class="tag">${x.nota||'—'}</td>
     </tr>`;

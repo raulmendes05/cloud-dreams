@@ -74,6 +74,9 @@
   .reopen{cursor:pointer;background:none;border:none;color:var(--muted);font-size:10.5px;text-decoration:underline;margin-left:6px}
   .reopen:hover{color:var(--txt)}
   .free{color:var(--green);font-weight:700}
+  .gap-pos{color:var(--neon2);font-weight:700}
+  .gap-zero{color:var(--muted)}
+  .gap-neg{color:var(--pink);font-weight:700}
   /* modal */
   .overlay{position:fixed;inset:0;background:rgba(4,6,14,.72);backdrop-filter:blur(6px);
     display:none;align-items:center;justify-content:center;z-index:50;padding:20px}
@@ -164,6 +167,7 @@
         <option value="comecoAsc">Ordenar: mais antigo</option>
         <option value="dias">Ordenar: durou mais</option>
         <option value="diasAsc">Ordenar: durou menos</option>
+        <option value="gap">Ordenar: aguentou mais sem vape</option>
         <option value="preco">Ordenar: mais caro</option>
         <option value="puffs">Ordenar: mais puffs</option>
       </select>
@@ -172,7 +176,7 @@
       <table>
         <thead><tr>
           <th>#</th><th>Foto</th><th>Marca</th><th>Sabor</th><th>Puffs</th>
-          <th>Início</th><th>Fim</th><th>Durou</th><th>Preço</th><th>Nota</th>
+          <th>Início</th><th>Fim</th><th>Durou</th><th>Sem vape</th><th>Preço</th><th>Nota</th>
         </tr></thead>
         <tbody id="tbody"></tbody>
       </table>
