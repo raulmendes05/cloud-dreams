@@ -1,10 +1,15 @@
 /* ===== CloudDreams · lógica ===== */
 const LS_KEY = 'clouddreams_extra_vapes';
 const LS_PHOTOS = 'clouddreams_photos';
+const LS_OVERRIDES = 'clouddreams_overrides'; // alterações a vapes existentes (ex: data de fim)
 
 // vapes adicionados pelo utilizador (guardados no navegador)
 function loadExtra(){ try { return JSON.parse(localStorage.getItem(LS_KEY)) || []; } catch(e){ return []; } }
 function saveExtra(list){ localStorage.setItem(LS_KEY, JSON.stringify(list)); }
+
+// overrides: permitem terminar/editar qualquer vape (mesmo os da base) sem tocar no Excel
+function loadOverrides(){ try { return JSON.parse(localStorage.getItem(LS_OVERRIDES)) || {}; } catch(e){ return {}; } }
+function saveOverrides(map){ localStorage.setItem(LS_OVERRIDES, JSON.stringify(map)); }
 
 /* ---------- fotos (guardadas no navegador, encolhidas) ---------- */
 function loadPhotos(){ try { return JSON.parse(localStorage.getItem(LS_PHOTOS)) || {}; } catch(e){ return {}; } }
@@ -39,7 +44,8 @@ function resizeImage(file, maxDim=600, quality=0.72){
 function allVapes(){
   const base = (window.VAPES_BASE || []).slice();
   const extra = loadExtra();
-  return base.concat(extra);
+  const ov = loadOverrides();
+  return base.concat(extra).map(v => ov[v.id] ? {...v, ...ov[v.id]} : v);
 }
 
 /* ---------- helpers ---------- */
@@ -181,7 +187,11 @@ function render(){
     const active = !x.fim;
     const preco = x.preco>0 ? fmtEur(x.preco) : '<span class="free">grátis</span>';
     const puffs = typeof x.puffs==='number' ? fmtNum(x.puffs) : '<span class="tag">recarregável</span>';
-    const durou = active ? '<span class="active-badge">em uso</span>' : (x.dias!=null?x.dias+' dias':'—');
+    const ov = loadOverrides();
+    const finishedByUser = ov[x.id] && ov[x.id].fim;
+    const durou = active
+      ? `<button class="finishbtn" onclick="openFinish('${x.id}')">🏁 terminar</button>`
+      : (x.dias!=null?x.dias+' dias':'—') + (finishedByUser?`<button class="reopen" onclick="reopenVape('${x.id}')" title="voltar a por em uso">↺</button>`:'');
     const photo = getPhoto(x);
     const cap = `${x.marca} · ${x.sabor}`.replace(/'/g,"\\'");
     const photoCell = photo
@@ -227,6 +237,47 @@ function openLightbox(id, cap){
 }
 function closeLightbox(){ document.getElementById('lightbox').classList.remove('show'); lightboxId=null; }
 function removePhotoFromLightbox(){ if(lightboxId!=null){ removePhoto(lightboxId); closeLightbox(); } }
+
+/* ---------- terminar vape (definir data de fim mais tarde) ---------- */
+let finishId = null;
+function openFinish(id){
+  const v = allVapes().find(x=>String(x.id)===String(id));
+  if(!v) return;
+  finishId = id;
+  document.getElementById('finishName').textContent = `${v.marca} · ${v.sabor}`;
+  const d = document.getElementById('finishDate');
+  d.value = new Date().toISOString().slice(0,10);
+  d.min = v.comeco || '';
+  d.oninput = updateFinishInfo;
+  updateFinishInfo();
+  document.getElementById('finishOverlay').classList.add('show');
+}
+function updateFinishInfo(){
+  const v = allVapes().find(x=>String(x.id)===String(finishId));
+  const fim = document.getElementById('finishDate').value;
+  const info = document.getElementById('finishInfo');
+  if(v && fim){
+    const dias = daysBetween(v.comeco, fim);
+    info.textContent = dias!=null ? (dias<0 ? '⚠️ essa data é anterior ao início.' : `Vai contar como ${dias} dia${dias===1?'':'s'} de duração.`) : '';
+  } else info.textContent = '';
+}
+function closeFinish(){ document.getElementById('finishOverlay').classList.remove('show'); finishId=null; }
+function confirmFinish(){
+  const v = allVapes().find(x=>String(x.id)===String(finishId));
+  const fim = document.getElementById('finishDate').value;
+  if(!v || !fim){ alert('Escolhe uma data 😉'); return; }
+  const dias = daysBetween(v.comeco, fim);
+  if(dias!=null && dias<0){ alert('A data de fim não pode ser antes do início 🤔'); return; }
+  const ov = loadOverrides();
+  ov[finishId] = { ...(ov[finishId]||{}), fim, dias };
+  saveOverrides(ov);
+  closeFinish();
+  refresh();
+}
+function reopenVape(id){
+  const ov = loadOverrides();
+  if(ov[id]){ delete ov[id].fim; delete ov[id].dias; if(Object.keys(ov[id]).length===0) delete ov[id]; saveOverrides(ov); refresh(); }
+}
 
 /* ---------- add modal ---------- */
 let pendingPhoto = null; // foto escolhida no formulário, ainda por guardar
