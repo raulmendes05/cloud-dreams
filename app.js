@@ -99,17 +99,16 @@ function renderStats(){
   });
 
   const cards = [
+    {ic:'💸', lbl:'Total gasto', val:fmtEur(s.totalGasto), sub:`≈ ${cafes} cafés ☕`, accent:true, wide:true},
     {ic:'💨', lbl:'Vapes comprados', val:fmtNum(s.count), sub:`em ${Math.round(s.meses)} meses`},
-    {ic:'💸', lbl:'Total gasto', val:fmtEur(s.totalGasto), sub:`≈ ${cafes} cafés ☕`, accent:true},
-    {ic:'🏅', lbl:'Recorde sem vape', val:recorde+' dias', sub:recordeVape?`antes do ${recordeVape.marca}`:'—', accent:true},
-    {ic:'🧘', lbl:'Total sem vape', val:totalSemVape+' dias', sub:'somando todas as pausas'},
+    {ic:'🏅', lbl:'Recorde sem vape', val:recorde+' dias', sub:recordeVape?`antes do ${recordeVape.marca}`:'—', accent:true, wide:true},
     {ic:'🌬️', lbl:'Puffs totais', val:fmtNum(s.totalPuffs), sub:'baforadas registadas'},
-    {ic:'⏳', lbl:'Duração média', val:Math.round(s.avgDias)+' dias', sub:'por vape'},
     {ic:'🏆', lbl:'Durou mais', val:(s.longest?s.longest.dias+' dias':'—'), sub:s.longest?`${s.longest.marca} · ${s.longest.sabor}`:''},
+    {ic:'⏳', lbl:'Duração média', val:Math.round(s.avgDias)+' dias', sub:'por vape'},
     {ic:'🏷️', lbl:'Marca favorita', val:s.marca.value||'—', sub:`${s.marca.count}× comprada`},
   ];
   document.getElementById('stats').innerHTML = cards.map(c=>`
-    <div class="stat ${c.accent?'accent':''}">
+    <div class="stat ${c.accent?'accent':''} ${c.wide?'wide':''}">
       <div class="ic">${c.ic}</div>
       <div class="lbl">${c.lbl}</div>
       <div class="val">${c.val}</div>
