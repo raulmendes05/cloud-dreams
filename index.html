@@ -4,6 +4,12 @@
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>CloudDreams · O meu diário de vapes</title>
+<link rel="icon" type="image/svg+xml" href="favicon.svg" />
+<link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png" />
+<link rel="icon" type="image/png" sizes="16x16" href="favicon-16.png" />
+<link rel="apple-touch-icon" href="apple-touch-icon.png" />
+<link rel="manifest" href="site.webmanifest" />
+<meta name="theme-color" content="#0a0c16" />
 <link rel="preconnect" href="https://cdn.jsdelivr.net" />
 <style>
   :root{
@@ -25,7 +31,7 @@
   /* header */
   header.top{display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap;margin-bottom:28px}
   .brand{display:flex;align-items:center;gap:14px}
-  .logo{font-size:34px;filter:drop-shadow(0 4px 14px rgba(124,92,255,.6))}
+  .logo{width:46px;height:46px;border-radius:12px;display:block;filter:drop-shadow(0 4px 14px rgba(124,92,255,.6))}
   .brand h1{margin:0;font-size:26px;letter-spacing:.5px;
     background:linear-gradient(90deg,#fff,var(--neon2));-webkit-background-clip:text;background-clip:text;color:transparent}
   .brand p{margin:2px 0 0;color:var(--muted);font-size:13px}
@@ -35,7 +41,7 @@
   .btn:hover{transform:translateY(-2px);filter:brightness(1.08)}
   .btn:active{transform:translateY(0)}
   /* stat grid */
-  .stats{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-bottom:26px}
+  .stats{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-bottom:26px;grid-auto-flow:dense}
   .stat{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:18px 20px 16px;
     backdrop-filter:blur(10px);box-shadow:var(--shadow);position:relative;overflow:hidden;
     display:flex;flex-direction:column;justify-content:center;min-height:104px}
@@ -47,8 +53,16 @@
   .stat.wide{grid-column:span 2}
   .stat.wide .val{font-size:36px}
   .stat.wide::after{content:"";position:absolute;inset:0;background:radial-gradient(420px 120px at 100% 0%,rgba(124,92,255,.14),transparent 70%);pointer-events:none}
-  @media(max-width:720px){.stats{grid-template-columns:repeat(2,1fr)}.stat.wide{grid-column:span 2}.stat.wide .val{font-size:30px}}
-  @media(max-width:460px){.stats{grid-template-columns:1fr}.stat.wide{grid-column:span 1}.stat.wide .val{font-size:28px}}
+  @media(max-width:720px){
+    .stats{grid-template-columns:repeat(2,1fr);gap:11px}
+    .stat.wide{grid-column:span 2}
+    .stat{min-height:88px;padding:15px 15px 13px}
+    .stat .val{font-size:23px}
+    .stat.wide .val{font-size:30px}
+    .stat .ic{font-size:18px;top:12px;right:13px}
+    .stat .lbl{font-size:11px}
+  }
+  @media(max-width:340px){.stats{grid-template-columns:1fr}.stat.wide{grid-column:span 1}}
   /* sections */
   .section{background:var(--card);border:1px solid var(--line);border-radius:20px;padding:20px 22px;margin-bottom:22px;
     backdrop-filter:blur(10px);box-shadow:var(--shadow)}
@@ -133,7 +147,7 @@
 <div class="wrap">
   <header class="top">
     <div class="brand">
-      <div class="logo">☁️💨</div>
+      <img class="logo" src="favicon.svg" alt="CloudDreams" />
       <div>
         <h1>CloudDreams</h1>
         <p>O diário de todos os vapes do Raul · desde ago 2023</p>
