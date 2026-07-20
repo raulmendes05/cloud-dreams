@@ -11,7 +11,8 @@ window.VAPES_BASE = [
     "fim": "2023-09-09",
     "dias": 9,
     "entre": null,
-    "preco": 10.0
+    "preco": 10,
+    "foto": "fotos/1.jpg"
   },
   {
     "id": 2,
@@ -23,7 +24,8 @@ window.VAPES_BASE = [
     "fim": "2023-11-18",
     "dias": 38,
     "entre": 32,
-    "preco": 0
+    "preco": 0,
+    "foto": "fotos/2.jpg"
   },
   {
     "id": 3,
@@ -35,7 +37,8 @@ window.VAPES_BASE = [
     "fim": "2024-02-06",
     "dias": 24,
     "entre": 56,
-    "preco": 15.0
+    "preco": 15,
+    "foto": "fotos/3.jpg"
   },
   {
     "id": 4,
@@ -47,7 +50,8 @@ window.VAPES_BASE = [
     "fim": "2024-03-09",
     "dias": 18,
     "entre": 14,
-    "preco": 15.0
+    "preco": 15,
+    "foto": "fotos/4.jpg"
   },
   {
     "id": 5,
@@ -59,7 +63,8 @@ window.VAPES_BASE = [
     "fim": "2024-04-03",
     "dias": 7,
     "entre": 18,
-    "preco": 15.0
+    "preco": 15,
+    "foto": "fotos/5.jpg"
   },
   {
     "id": 6,
@@ -71,7 +76,8 @@ window.VAPES_BASE = [
     "fim": "2024-04-23",
     "dias": 13,
     "entre": 7,
-    "preco": 15.0
+    "preco": 15,
+    "foto": "fotos/6.jpg"
   },
   {
     "id": 7,
@@ -83,7 +89,8 @@ window.VAPES_BASE = [
     "fim": "2024-05-15",
     "dias": 5,
     "entre": 17,
-    "preco": 10.0
+    "preco": 10,
+    "foto": "fotos/7.jpg"
   },
   {
     "id": 8,
@@ -95,7 +102,8 @@ window.VAPES_BASE = [
     "fim": "2024-05-25",
     "dias": 5,
     "entre": 5,
-    "preco": 20.0
+    "preco": 20,
+    "foto": "fotos/8.jpg"
   },
   {
     "id": 9,
@@ -107,7 +115,8 @@ window.VAPES_BASE = [
     "fim": "2024-06-05",
     "dias": 5,
     "entre": 6,
-    "preco": 0
+    "preco": 0,
+    "foto": "fotos/9.jpg"
   },
   {
     "id": 10,
@@ -119,7 +128,8 @@ window.VAPES_BASE = [
     "fim": "2024-07-20",
     "dias": 31,
     "entre": 14,
-    "preco": 30.0
+    "preco": 30,
+    "foto": "fotos/10.jpg"
   },
   {
     "id": 11,
@@ -131,7 +141,8 @@ window.VAPES_BASE = [
     "fim": "2024-08-13",
     "dias": 15,
     "entre": 9,
-    "preco": 15.0
+    "preco": 15,
+    "foto": "fotos/11.jpg"
   },
   {
     "id": 12,
@@ -143,7 +154,8 @@ window.VAPES_BASE = [
     "fim": "2024-09-13",
     "dias": 16,
     "entre": 15,
-    "preco": 20.0
+    "preco": 20,
+    "foto": "fotos/12.jpg"
   },
   {
     "id": 13,
@@ -155,7 +167,8 @@ window.VAPES_BASE = [
     "fim": "2024-09-22",
     "dias": 8,
     "entre": 1,
-    "preco": 0
+    "preco": 0,
+    "foto": "fotos/13.jpg"
   },
   {
     "id": 14,
@@ -167,7 +180,8 @@ window.VAPES_BASE = [
     "fim": "2024-10-18",
     "dias": 20,
     "entre": 6,
-    "preco": 15.0
+    "preco": 15,
+    "foto": "fotos/14.jpg"
   },
   {
     "id": 15,
@@ -179,7 +193,8 @@ window.VAPES_BASE = [
     "fim": "2024-10-09",
     "dias": 6,
     "entre": -15,
-    "preco": 15.0
+    "preco": 15,
+    "foto": "fotos/15.jpg"
   },
   {
     "id": 16,
@@ -191,7 +206,8 @@ window.VAPES_BASE = [
     "fim": "2024-10-27",
     "dias": 7,
     "entre": 11,
-    "preco": 20.0
+    "preco": 20,
+    "foto": "fotos/16.jpg"
   },
   {
     "id": 17,
@@ -203,7 +219,8 @@ window.VAPES_BASE = [
     "fim": "2024-11-23",
     "dias": 14,
     "entre": 13,
-    "preco": 20.0
+    "preco": 20,
+    "foto": "fotos/17.jpg"
   },
   {
     "id": 18,
@@ -215,7 +232,8 @@ window.VAPES_BASE = [
     "fim": "2024-12-09",
     "dias": 11,
     "entre": 5,
-    "preco": 20.0
+    "preco": 20,
+    "foto": "fotos/18.jpg"
   },
   {
     "id": 19,
@@ -227,7 +245,8 @@ window.VAPES_BASE = [
     "fim": "2024-12-20",
     "dias": 14,
     "entre": -3,
-    "preco": 0
+    "preco": 0,
+    "foto": "fotos/19.jpg"
   },
   {
     "id": 20,
@@ -239,7 +258,8 @@ window.VAPES_BASE = [
     "fim": "2025-01-03",
     "dias": 14,
     "entre": 0,
-    "preco": 0
+    "preco": 0,
+    "foto": "fotos/20.jpg"
   },
   {
     "id": 21,
@@ -251,7 +271,8 @@ window.VAPES_BASE = [
     "fim": "2025-01-26",
     "dias": 19,
     "entre": 4,
-    "preco": 27.0
+    "preco": 27,
+    "foto": "fotos/21.jpg"
   },
   {
     "id": 22,
@@ -263,7 +284,8 @@ window.VAPES_BASE = [
     "fim": "2025-02-07",
     "dias": 12,
     "entre": 0,
-    "preco": 0
+    "preco": 0,
+    "foto": "fotos/22.jpg"
   },
   {
     "id": 23,
@@ -275,7 +297,8 @@ window.VAPES_BASE = [
     "fim": "2025-02-22",
     "dias": 15,
     "entre": 0,
-    "preco": 0
+    "preco": 0,
+    "foto": "fotos/23.jpg"
   },
   {
     "id": 24,
@@ -287,7 +310,8 @@ window.VAPES_BASE = [
     "fim": "2025-05-29",
     "dias": 17,
     "entre": 79,
-    "preco": 20.0
+    "preco": 20,
+    "foto": "fotos/24.jpg"
   },
   {
     "id": 25,
@@ -299,7 +323,8 @@ window.VAPES_BASE = [
     "fim": "2025-06-17",
     "dias": 17,
     "entre": 2,
-    "preco": 18.0
+    "preco": 18,
+    "foto": "fotos/25.jpg"
   },
   {
     "id": 26,
@@ -311,7 +336,8 @@ window.VAPES_BASE = [
     "fim": "2025-06-15",
     "dias": 3,
     "entre": -5,
-    "preco": 0
+    "preco": 0,
+    "foto": "fotos/26.jpg"
   },
   {
     "id": 27,
@@ -323,7 +349,8 @@ window.VAPES_BASE = [
     "fim": "2025-09-02",
     "dias": 38,
     "entre": 41,
-    "preco": 20.0
+    "preco": 20,
+    "foto": "fotos/27.jpg"
   },
   {
     "id": 28,
@@ -335,7 +362,8 @@ window.VAPES_BASE = [
     "fim": "2025-11-22",
     "dias": 37,
     "entre": 44,
-    "preco": 20.0
+    "preco": 20,
+    "foto": "fotos/28.jpg"
   },
   {
     "id": 29,
@@ -347,7 +375,8 @@ window.VAPES_BASE = [
     "fim": "2026-01-09",
     "dias": 24,
     "entre": 24,
-    "preco": 20.0
+    "preco": 20,
+    "foto": "fotos/29.jpg"
   },
   {
     "id": 30,
@@ -359,7 +388,8 @@ window.VAPES_BASE = [
     "fim": "2026-02-10",
     "dias": 28,
     "entre": 4,
-    "preco": 20.0
+    "preco": 20,
+    "foto": "fotos/30.jpg"
   },
   {
     "id": 31,
@@ -371,7 +401,8 @@ window.VAPES_BASE = [
     "fim": "2026-05-26",
     "dias": 73,
     "entre": 32,
-    "preco": 15.0
+    "preco": 15,
+    "foto": "fotos/31.jpg"
   },
   {
     "id": 32,
@@ -383,6 +414,7 @@ window.VAPES_BASE = [
     "fim": null,
     "dias": null,
     "entre": 12,
-    "preco": 18.0
+    "preco": 18,
+    "foto": "fotos/32.jpg"
   }
 ];
