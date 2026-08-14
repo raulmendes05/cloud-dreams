@@ -40,6 +40,23 @@
     box-shadow:0 10px 30px -8px rgba(124,92,255,.7);transition:transform .12s ease,filter .12s}
   .btn:hover{transform:translateY(-2px);filter:brightness(1.08)}
   .btn:active{transform:translateY(0)}
+  /* live hero */
+  .hero{margin-bottom:22px;border-radius:22px;padding:26px 24px 22px;position:relative;overflow:hidden;
+    border:1px solid var(--line);box-shadow:var(--shadow);text-align:center;backdrop-filter:blur(10px)}
+  .hero:empty{display:none}
+  .hero.sem{background:radial-gradient(620px 220px at 50% 0%,rgba(74,222,128,.18),transparent 70%),var(--card)}
+  .hero.com{background:radial-gradient(620px 220px at 50% 0%,rgba(124,92,255,.22),transparent 70%),var(--card)}
+  .hero .h-live{position:absolute;top:14px;right:16px;font-size:11px;text-transform:uppercase;letter-spacing:1px;color:var(--muted);display:flex;align-items:center;gap:6px}
+  .hero .h-live .dot{width:8px;height:8px;border-radius:50%;background:#4ade80;animation:pulse 1.8s infinite}
+  @keyframes pulse{0%{box-shadow:0 0 0 0 rgba(74,222,128,.5)}70%{box-shadow:0 0 0 10px rgba(74,222,128,0)}100%{box-shadow:0 0 0 0 rgba(74,222,128,0)}}
+  .hero .h-label{font-size:14.5px;color:var(--txt);opacity:.82;font-weight:600;letter-spacing:.3px}
+  .hero .h-big{font-size:60px;font-weight:800;line-height:1;margin:6px 0 8px}
+  .hero .h-big span{font-size:22px;font-weight:600;margin-left:8px;-webkit-text-fill-color:var(--muted);color:var(--muted)}
+  .hero.sem .h-big{background:linear-gradient(90deg,#4ade80,#22d3ee);-webkit-background-clip:text;background-clip:text;color:transparent}
+  .hero.com .h-big{background:linear-gradient(90deg,#a78bfa,#ff5c9d);-webkit-background-clip:text;background-clip:text;color:transparent}
+  .hero .h-ticker{font-variant-numeric:tabular-nums;font-size:15px;color:var(--muted);letter-spacing:1.5px}
+  .hero .h-sub{font-size:13px;color:var(--muted);margin-top:10px}
+  @media(max-width:520px){.hero .h-big{font-size:46px}.hero .h-big span{font-size:18px}.hero .h-ticker{font-size:13.5px;letter-spacing:1px}}
   /* stat grid */
   .stats{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-bottom:26px;grid-auto-flow:dense}
   .stat{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:18px 20px 16px;
@@ -155,6 +172,8 @@
     </div>
     <button class="btn" onclick="openAdd()">＋ Adicionar vape</button>
   </header>
+
+  <div class="hero" id="liveHero"></div>
 
   <div class="stats" id="stats"></div>
 

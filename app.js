@@ -55,6 +55,52 @@ function daysBetween(a,b){ if(!a||!b) return null; return Math.round((new Date(b
 function ptDate(iso){ if(!iso) return '—'; const d=new Date(iso); return d.toLocaleDateString('pt-PT',{day:'2-digit',month:'short',year:'2-digit'}); }
 function mode(arr){ const m={}; let best=null,bc=0; arr.forEach(x=>{ if(!x) return; m[x]=(m[x]||0)+1; if(m[x]>bc){bc=m[x];best=x;} }); return {value:best,count:bc}; }
 
+/* ---------- contador AO VIVO (com/sem vape neste momento) ---------- */
+function parseLocalDate(iso){ const [y,m,d]=iso.split('-').map(Number); return new Date(y,m-1,d,0,0,0,0); }
+
+// estado atual: se há um vape sem data de fim -> "com vape"; senão -> "sem vape" desde o último fim
+function computeHero(){
+  const v = allVapes().filter(x=>x.comeco);
+  const active = v.filter(x=>!x.fim).sort((a,b)=>b.comeco.localeCompare(a.comeco))[0];
+  if(active) return { state:'com', start:parseLocalDate(active.comeco), vape:active };
+  const finished = v.filter(x=>x.fim).sort((a,b)=>b.fim.localeCompare(a.fim));
+  const last = finished[0];
+  return { state:'sem', start: last?parseLocalDate(last.fim):null, vape:last };
+}
+
+let heroInfo=null, heroTimer=null;
+function startHeroClock(){
+  if(heroTimer){ clearInterval(heroTimer); heroTimer=null; }
+  heroInfo = computeHero();
+  const el = document.getElementById('liveHero');
+  if(!heroInfo || !heroInfo.start){ el.className='hero'; el.innerHTML=''; return; }
+  const isCom = heroInfo.state==='com';
+  const label = isCom ? '💨 Tens vape há' : '🌬️ Estás sem vape há';
+  const vp = heroInfo.vape;
+  const sub = isCom
+    ? `${vp.marca} · ${vp.sabor}`
+    : (vp ? `desde que acabou o ${vp.marca} · ${vp.sabor}` : '');
+  el.className = 'hero '+(isCom?'com':'sem');
+  el.innerHTML = `
+    <div class="h-live"><span class="dot"></span> ao vivo</div>
+    <div class="h-label">${label}</div>
+    <div class="h-big" id="heroBig"></div>
+    <div class="h-ticker" id="heroTicker"></div>
+    <div class="h-sub">${sub}</div>`;
+  tickHero();
+  heroTimer = setInterval(tickHero, 1000);
+}
+function tickHero(){
+  if(!heroInfo || !heroInfo.start) return;
+  let ms = Date.now() - heroInfo.start.getTime(); if(ms<0) ms=0;
+  const s=Math.floor(ms/1000);
+  const d=Math.floor(s/86400), h=Math.floor(s%86400/3600), m=Math.floor(s%3600/60), ss=s%60;
+  const p2=n=>String(n).padStart(2,'0');
+  const big=document.getElementById('heroBig'), tk=document.getElementById('heroTicker');
+  if(big) big.innerHTML = `${d}<span>${d===1?'dia':'dias'}</span>`;
+  if(tk) tk.textContent = `${p2(d)}d ${p2(h)}h ${p2(m)}m ${p2(ss)}s`;
+}
+
 /* ---------- pausas entre vapes (quanto tempo sem vape) ---------- */
 // devolve um mapa { id: dias de pausa antes deste vape }.
 // pausa = dias entre o FIM do vape anterior e o INÍCIO deste.
@@ -407,7 +453,7 @@ function puffAnimation(){
 }
 
 /* ---------- boot ---------- */
-function refresh(){ renderStats(); fillBrandFilter(); renderCharts(); render(); }
+function refresh(){ startHeroClock(); renderStats(); fillBrandFilter(); renderCharts(); render(); }
 // fechar modais ao clicar fora
 document.querySelectorAll('.overlay').forEach(o=>o.addEventListener('click',e=>{ if(e.target===o) o.classList.remove('show'); }));
 document.addEventListener('keydown',e=>{ if(e.key==='Escape'){ document.querySelectorAll('.overlay').forEach(o=>o.classList.remove('show')); closeLightbox(); } });
